@@ -5,6 +5,10 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
+import re
+import json
+from urllib3 import request
+from django.views import View
 
 from users.models import User
 from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
@@ -58,10 +62,16 @@ def logout(request):
     auth.logout(request)
     return HttpResponseRedirect(reverse('index'))
 
+
 @csrf_exempt
-def check_email(request):
-    if request.method == "POST":
-        email = request.POST.get("email", "")
-        valid = (get_user_model().objects.filter(email=email).count() == 0) and ('@' in email)
-        return JsonResponse({'valid': valid})
-    return JsonResponse({'valid': False})
+def validate_email(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        email = data.get("email", "").lower()
+        email_regex = r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        if not re.match(email_regex, email):
+            return JsonResponse({"valid": False, "message": "Некорректный формат Email."})
+        if get_user_model().objects.filter(email=email).exists():
+            return JsonResponse({"valid": False, "message": "Email уже используется."})
+        return JsonResponse({"valid": True, "message": "Email доступен!"})
+    return JsonResponse({"valid": False, "message": "Некорректный запрос."})

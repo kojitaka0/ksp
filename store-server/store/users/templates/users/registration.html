@@ -1,4 +1,5 @@
 {% extends 'users/base.html' %}
+{% load static %}
 
 {% block content %}
 	<main>
@@ -39,12 +40,17 @@
                                             <label class="small mb-1" for="{{ form.username.id_for_label }}">Имя пользователя</label>
                                             {{ form.username }}
                                         </div>
-                                        <div class="col-md-6">
-                                            <label class="small mb-1" for="{{ form.email.id_for_label }}">Адрес электронной
-                                                почты</label>
+                                        <div class="form-group">
+                                            <label class="small mb-1" for="{{ form.email.id_for_label }}">Адрес электронной почты</label>
                                             {{ form.email }}
-                                            <span id="email-feedback" style="font-size:0.9em;"></span>
+                                            <button type="button" id="checkEmailBtn" class="btn btn-secondary btn-sm ml-2">Проверить Email</button>
+                                            <span id="emailValidationResult" class="ml-2"></span>
+                                            <span id="emailLoader" style="display:none;">
+                                                <img src="{% static 'vendor/img/preloader.gif' %}" alt="Загрузка..." style="height:1.5em;vertical-align:middle;">
+                                            </span>
+                                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                                         </div>
+                                        <script src="{% static '/vendor/js/email_deferred.js' %}"></script>
                                     </div>
                                     <div class="form-row">
                                         <div class="col-md-6">
@@ -75,28 +81,4 @@
             </div>
         </main>
 {% endblock %}
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(function(){
-    $('#id_email').on('blur', function(){
-        let email = $(this).val();
-        let csrf = $("input[name=csrfmiddlewaretoken]").val();
-        if(email.length > 3){
-            $.ajax({
-                url: "{% url 'users:check_email' %}",
-                type: "POST",
-                data: {email: email, csrfmiddlewaretoken: csrf},
-                success: function(resp){
-                    if(resp.valid){
-                        $('#email-feedback').text("✔ Email доступен").css("color", "green");
-                    } else {
-                        $('#email-feedback').text("✖ Email уже используется или некорректен").css("color", "red");
-                    }
-                }
-            });
-        } else {
-            $('#email-feedback').text("");
-        }
-    });
-});
-</script>
+

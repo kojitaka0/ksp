@@ -1,15 +1,13 @@
 {% extends 'products/base.html' %}
 {% load static  %}
-
 {% block css %}
 	  <link href={% static '/vendor/css/index.css' %} rel="stylesheet">
 {% endblock %}
 
 {% block content %}
     <section>
-    <!--    <div class="alert alert-light text-center" role="alert">-->
-    <!--        Информационное сообщение-->
-    <!--    </div>-->
+        <div id="announcement" class="alert alert-info"></div>
+        <script src="{% static '/vendor/js/custom_ajax.js' %}"></script>
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
@@ -27,6 +25,8 @@
         </div>
     </div>
 </section>
+    
 {% endblock %}
+
 
 
