@@ -16,6 +16,8 @@
 
     <!-- Custom styles for this template -->
     {% block css %} {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/up_button.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}">
 
 </head>
 
@@ -34,10 +36,8 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'products:index' %}">Каталог <i class="fas fa-shopping-bag"></i> </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'users:login' %}">Войти <i class="fas fa-sign-in-alt"></i></a>
-                </li>
-                <li class="nav-item dropdown">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-user-circle"></i>
@@ -47,22 +47,42 @@
                             <a class="dropdown-item" href="{% url 'users:profile' %}">Профиль</a>
                         </li>
                         <li><a class="dropdown-item" href="orders/orders.html">Заказы</a></li>
-                        <li><a class="dropdown-item" href="#">Админ-панель</a></li>
+                        {% if user.is_superuser or user.is_staff %}
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Админ-панель</a></li>
+                        {% endif %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">
+                            <a class="dropdown-item" href="{% url 'users:logout' %}">
                                 Выйти
                             </a>
                         </li>
                     </ul>
                 </li>
+                {% else %}
+                    <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:login' %}">Войти <i class="fas fa-sign-in-alt"></i></a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </div>
 </nav>
 
+<!-- "Up" Button -->
+<button id="upButton" title="Go to top">↑</button>
+
+<!-- Modal Window -->
+<div id="modalWindow" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalHeader">СКИДКИ ДО 20%</h2>
+        <p>Сегодня и только сегодня, скидки на все товары ДО 20%</p>
+    </div>
+</div>
+
+<button id="openModal">Внимание!</button>
 
 {% block content %} {% endblock %}
 
@@ -77,6 +97,10 @@
 
 <!-- FontAwesome script -->
 <script src={% static '/vendor/fontawesome/fontawesome-icons.js' %} crossorigin="anonymous"></script>
+
+<!-- Custom JavaScript -->
+<script src="{% static 'js/up_button.js' %}"></script>
+<script src="{% static 'js/modal.js' %}"></script>
 
 </body>
 

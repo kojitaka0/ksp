@@ -68,9 +68,16 @@
                             </h4>
                             <h5>{{ product.price  }}</h5>
                             <p class="card-text">{{ product.description }}</p>
+                            <a href="{% url 'products:detail' product.id %}" class="btn btn-info">More</a>
+                            {% if user.is_superuser %}
+                                <a href="{% url 'products:update_product' product.id %}" class="btn btn-primary">Edit</a>
+                                <a href="{% url 'products:delete_product' product.id %}" class="btn btn-danger">Delete</a>
+                            {% endif %}
                         </div>
                         <div class="card-footer text-center">
-                            <button type="button" class="btn btn-outline-success">Отправить в корзину</button>
+                            <a class="btn btn-outline-success" href="{% url 'products:basket_add' product.id %}">
+                                Отправить в корзину
+                            </a>
                         </div>
                     </div>
                 </div>

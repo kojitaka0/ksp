@@ -19,14 +19,20 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
-from products.views import index, products
+from products.views import index
+
+from products import views
+
+
+app_name = 'products'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('products/', include('products.urls')),  # Include the products URLs
     path('', index, name='index'),
-    path('products/', include('products.urls', namespace='products')),
-
-    path('users/', include('users.urls', namespace='users')),
+    path('delete/<int:product_id>/', views.delete_product, name='delete_product'),
+    path('update/<int:product_id>/', views.update_product, name='update_product'),
+    path('users/', include('users.urls')),
 ]
 
 if settings.DEBUG == True:
